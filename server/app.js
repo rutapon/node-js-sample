@@ -139,27 +139,5 @@
 
     listenCommand(process.env.PORT || 8088);
 
-    //var url = "andamania";
-    //var token = "563f471d-5950-459c-9461-2424eae03e37";
-    ////var url = "wts";
-    ////var token = "1c7c011a-c53e-40db-bd12-df8e74a4a326";
-
-    //function updateDns(url, token) {
-    //    var url = "https://www.duckdns.org/update/" + url + "/" + token;
-    //    request.get(url, function (error, response, body) {
-
-    //        if (!error && response.statusCode == 200) {
-    //            console.log('update dns', body);
-    //            //cb(body);
-    //        }
-    //    });
-    //}
-    //updateDns(url, token);
-    //setInterval(function () {
-    //    updateDns(url, token);
-    //}, 5 * 60000)
-
-
-    //NwStockServiceMethod.getAllProducts();
 })(this);
 
