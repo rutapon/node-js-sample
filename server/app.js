@@ -27,18 +27,44 @@
         request = require('request');
 
         var express = require('express');
-        var app = express();
-
         var compression = require('compression');
-        app.use(compression());
-
+        var minify = require('express-minify');
 
         var nodestatic = require('node-static');
-        file = new nodestatic.Server('../web');
+        file = new nodestatic.Server(__dirname + '/../web');
+
+        var app = express();
+
+        app.use(compression());
+
+        app.use(function (req, res, next) {
+            if (/\.min\.(css|js)$/.test(req.url)) {
+                res._no_minify = true;
+            }
+            next();
+        });
+
+        app.use(minify());
+    
+
+        app.use(function (req, res) {
+            //res.send('Hello World! by newww นิว');
+            //res.sendfile('index.html');
+            file.serve(req, res);
+        });
+
+        //require('mkdirp')(__dirname + '/../cache', function (err) {
+        //    if (err) console.error(err)
+        //    else app.use(minify({
+        //        cache: __dirname + '/../cache'
+        //    }));    
+        //});
 
     } else {
 
     }
+
+
 
     NwServiceProcess.addServiceMethod(NwStockServiceMethod);
 
@@ -109,11 +135,7 @@
 
     }
 
-    app.use(function (req, res) {
-        //res.send('Hello World! by newww นิว');
-        //res.sendfile('index.html');
-        file.serve(req, res);
-    });
+    //app.use(express.static(__dirname + '/../web'))
 
     listenCommand(process.env.PORT || 8088);
 
