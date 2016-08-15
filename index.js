@@ -16,7 +16,7 @@ app.set('port', (process.env.PORT || 5000))
 
 
 app.get('/', function (req, res) {
-    response.send('Hello World! by newww');
+    res.send('Hello World! by newww');
   //res.sendfile('index.html');
 });
 
