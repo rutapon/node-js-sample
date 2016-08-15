@@ -35,7 +35,7 @@
                 //console.log('cammandProcess : ' + JSON.stringify(msgObj));
 
                 if (this.cmdMethod.hasOwnProperty(cmd)) {
-
+                   
                     this.cmdMethod[cmd](data, function (resultObj) {
                         msgObj.data = resultObj;
                         if (cb) { cb(msgObj) }
