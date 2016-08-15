@@ -23,7 +23,7 @@ io.on('connection', function(socket){
   console.log('a user connected');
 });
 
-http.listen(5000, function () {
+http.listen(app.get('port'), function () {
   console.log('listening on *:3000');
 });
 
