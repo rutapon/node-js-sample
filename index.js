@@ -12,7 +12,7 @@ var url = 'mongodb://newww:123456@ds161505.mlab.com:61505/nwdict';
 var col = null;
 MongoClient.connect(url, function (err, db) {
     // Create a collection we want to drop later
-    var col = db.collection('nwDic');
+    col = db.collection('nwDic');
 
     col.ensureIndex({ esearch: 1 }, function (err, indexName) {
         // If there was an error, err is not null
