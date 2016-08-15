@@ -11,10 +11,15 @@
 (function () {
     var host = window.location.hostname;
     var port = window.location.port;
+    var protocol = 'ws:';
     //var host = 'localhost';
     //var host = 'newww.dyndns.org';
+    //alert(window.location.protocol + window.location.port);
 
-    var wsClient = app.wsClient = new NwWsClient('ws://' + host + ':' + port);
+    if (window.location.protocol == 'https:') {
+        protocol = 'wss:';
+    }
+    var wsClient = app.wsClient = new NwWsClient(protocol + '//' + host  + port);
 
     var stockMethod = app.stockMethod = new NwStockServiceConn(wsClient);
     wsClient.setOnConnectEventListener(function (socket) {
