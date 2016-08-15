@@ -99,7 +99,9 @@
         var appServer = http.createServer(app);
         passiveConn(appServer);
 
-        appServer.listen(commandPort, '0.0.0.0');
+        //appServer.listen(commandPort, '0.0.0.0');
+        appServer.listen(commandPort);
+
     }
 
     app.use(function (req, res) {
