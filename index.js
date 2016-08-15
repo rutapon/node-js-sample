@@ -40,14 +40,13 @@ MongoClient.connect(url, function (err, db) {
 });
 
 
-
 app.get('/', function (request, response) {
     response.send('Hello World!')
 })
 
 app.get('/test', function (request, response) {
     var reg = new RegExp('^' + 'cat', 'i');
-    console.log(reg);
+    //console.log(reg);
     var query = { esearch: { $regex: reg } };
 
     col.find(query).sort({ esearch: 1 }).limit(3).
