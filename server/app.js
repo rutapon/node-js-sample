@@ -22,9 +22,14 @@
         http = require('http');
         NwWsServer = require('./NwConn/NwWsServer.js');
 
-        require('./StaticHttp.js');
+        //require('./StaticHttp.js');
 
         request = require('request');
+
+        var express = require('express');
+        var app = express();
+        var nodestatic = require('node-static');
+        file = new nodestatic.Server('../web');
 
     } else {
 
@@ -91,13 +96,19 @@
     var listenCommand = function (commandPort) {
         this.commandPort = commandPort;
 
-        var appServer = http.createServer();
+        var appServer = http.createServer(app);
         passiveConn(appServer);
 
         appServer.listen(commandPort, '0.0.0.0');
     }
 
-    listenCommand(8026);
+    app.use(function (req, res) {
+        //res.send('Hello World! by newww นิว');
+        //res.sendfile('index.html');
+        file.serve(req, res);
+    });
+
+    listenCommand(process.env.PORT || 8088);
 
     var url = "andamania";
     var token = "563f471d-5950-459c-9461-2424eae03e37";

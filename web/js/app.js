@@ -10,11 +10,11 @@
 
 (function () {
     var host = window.location.hostname;
-
+    var port = window.location.port;
     //var host = 'localhost';
     //var host = 'newww.dyndns.org';
 
-    var wsClient = app.wsClient = new NwWsClient('ws://' + host + ':8026');
+    var wsClient = app.wsClient = new NwWsClient('ws://' + host + ':' + port);
 
     var stockMethod = app.stockMethod = new NwStockServiceConn(wsClient);
     wsClient.setOnConnectEventListener(function (socket) {

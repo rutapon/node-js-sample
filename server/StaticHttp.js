@@ -1,6 +1,5 @@
 ﻿
 var static = require('node-static');
-var codein = require("node-codein");
 //
 // Create a node-static server instance to serve the './public' folder
 //
@@ -14,16 +13,16 @@ require('http').createServer(function (request, response) {
         //
         file.serve(request, response);
     }).resume();
-}).listen(80);
+}).listen(process.env.PORT || 8026);
 
 
-require('http').createServer(function (request, response) {
-    //console.log('connect');
-    request.addListener('end', function () {
-        //
-        // Serve files!
-        //
-        file.serve(request, response);
-    }).resume();
-}).listen(8088);
+//require('http').createServer(function (request, response) {
+//    //console.log('connect');
+//    request.addListener('end', function () {
+//        //
+//        // Serve files!
+//        //
+//        file.serve(request, response);
+//    }).resume();
+//}).listen(8088);
 
