@@ -24,11 +24,11 @@ io.on('connection', function(socket){
   console.log('a user connected');
 });
 
-//http.listen(3000, function(){
-//  console.log('listening on *:3000');
-//});
+http.listen(app.get('port'), function () {
+  console.log('listening on *:3000');
+});
 
 
-app.listen(app.get('port'), function() {
-  console.log("Node app is running at localhost:" + app.get('port'))
-})
+//app.listen(app.get('port'), function() {
+//  console.log("Node app is running at localhost:" + app.get('port'))
+//})
