@@ -18,9 +18,10 @@
 
     if (window.location.protocol == 'https:') {
         protocol = 'wss:';
+        var wsClient = app.wsClient = new NwWsClient(protocol + '//' + host + port, { secure: true });
+    } else {
+        var wsClient = app.wsClient = new NwWsClient(protocol + '//' + host + port);
     }
-    var wsClient = app.wsClient = new NwWsClient(protocol + '//' + host  + port);
-
     var stockMethod = app.stockMethod = new NwStockServiceConn(wsClient);
     wsClient.setOnConnectEventListener(function (socket) {
         var id = wsClient.getId();
