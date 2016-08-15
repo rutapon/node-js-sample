@@ -28,6 +28,11 @@
 
         var express = require('express');
         var app = express();
+
+        var compression = require('compression');
+        app.use(compression());
+
+
         var nodestatic = require('node-static');
         file = new nodestatic.Server('../web');
 
