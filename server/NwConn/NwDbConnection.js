@@ -11,39 +11,17 @@
         _ = require('../../lib/underscore/underscore.js');
         async = require("async");
 
-        fs = require("fs");
-        path = require('path');
-        mkdirp = require('mkdirp');
+        MongoClient = require('mongodb').MongoClient;
 
-        //sqlite3 = require('sqlite3').verbose();
-        LinvoDB = require("linvodb3");
-        {
-            //console.log('You are using node-webkit!');
-            // The following two lines are very important
-            // Initialize the default store to Medeadown - which is a JS-only store which will work without recompiling in NW.js / Electron
-            LinvoDB.defaults.store = { db: require("medeadown") }; // Comment out to use LevelDB instead of Medea
-        }
-
-        //LinvoDB.dbPath = __dirname + '/../Database/';//process.cwd();
 
     } else {
 
     }
 
-    //function ensureExists(path, mask, cb) {
-    //    if (typeof mask == 'function') { // allow the `mask` parameter to be optional
-    //        cb = mask;
-    //        mask = 0777;
-    //    }
-    //    fs.mkdir(path, mask, function (err) {
-    //        if (err) {
-    //            if (err.code == 'EEXIST') cb(null); // ignore the error if the folder already exists
-    //            else cb(err); // something else went wrong
-    //        } else cb(null); // successfully created folder
-    //    });
-    //}
-
     //#endregion
+
+    //// Connection url
+
     var NwSqliteConnection = Class(function () {
         var schema = {}; // Non-strict always, can be left empty
 
@@ -51,71 +29,37 @@
         return {
             dbPath: '',
             allTable: {},
+            //dbConn: {},
+
             constructor: function (dbPath, cb) {
-                var self = this
+                //var self = this
                 this.dbPath = dbPath;
-                this.allTable = {};
-
-                mkdirp(dbPath, function (err) {
-                    if (err) console.error(err)
-                    else if (cb) self.initDB(cb);
-                });
-
-                //ensureExists(dbPath, function () {
-
-                //});
-                //if (!fs.existsSync(dbPath)) {
-                //    fs.mkdirSync(dbPath);
-                //}
-
-
+                if (cb) { this.initDB(cb) }
             },
 
             initDB: function (cb) {
-                //LinvoDB.dbPath = this.dbPath;
                 var self = this;
-
-                fs.readdir(this.dbPath, function (err, files) {
-
-                    files = _.map(files, function (f) {
-                        return f.replace('.db', '');
-                    });
-
-                    async.eachSeries(files, function (tableName, callback) {
-
-                        //db.ensureIndex({ fieldName: 'esearch' }, function (err) {
-                        //    // If there was an error, err is not null
-                        //    if (err)
-                        //        console.log(err);
-                        //});
-
-                        self.allTable[tableName] = new LinvoDB(tableName, schema, { filename: path.join(self.dbPath || ".", tableName + ".db") }); // New model; Doc is the constructor
-
-                        self.allTable[tableName].count({}, function () {
-                            //alert('loadDatabase');
-                            console.log('loadDatabase:', tableName);
-                            callback();
-                        });
-
-                    }, function () {
-                        cb();
-                    });
-
+                MongoClient.connect(this.dbPath, function (err, dbConn) {
+                    self.dbConn = dbConn;
+                    if (cb) cb(self);
                 });
             },
             _getDB: function (tableName) {
                 var self = this;
                 if (!_.has(this.allTable, tableName)) {
-                    //this.allTable[tableName] = new LinvoDB(tableName, schema, options); // New model; Doc is the constructor
-                    self.allTable[tableName] = new LinvoDB(tableName, schema, { filename: path.join(self.dbPath || ".", tableName + ".db") }); // New model; Doc is the constructor
-
+                    self.allTable[tableName] = self.dbConn.collection(tableName);
                 }
                 return this.allTable[tableName];
             },
             getAllTable: function (cb) {
                 cb(_.keys(this.allTable));
             },
-
+            count: function (tableName, findObj, cb) {
+                var db = this._getDB(tableName);
+                db.count(findObj, function (err, count) {
+                    cb(count);
+                });
+            },
             getAll: function (tableName, callback) {
 
                 var db = this._getDB(tableName);
@@ -145,7 +89,7 @@
             findLimit: function (tableName, findObj, limit, callback) {
                 var db = this._getDB(tableName);
 
-                db.find(findObj).limit(limit).exec(function (err, docs) {
+                db.find(findObj).limit(limit).toArray(function (err, docs) {
                     cb(docs);
                 });
 
@@ -167,10 +111,37 @@
                 }
 
                 db.find(query)
-             //.sort({ esearch: 1 })
-             .limit(limit).exec(function (err, docs) {
-                 callback(docs);
-             });
+              //.sort({ esearch: 1 })
+               .limit(limit).toArray(function (err, docs) {
+                   callback(docs);
+               });
+
+            },
+            searchStartWith: function (tableName, findObj, limit, callback) {
+
+                var db = this._getDB(tableName);
+
+                var query = { $or: [] };
+
+                var selectObj = {};
+
+                for (var i in findObj) {
+                    var reg = new RegExp('^' + findObj[i], 'i');
+                    //query[i] = { $regex: reg };
+                    var qObj = {};
+                    qObj[i] = { $regex: reg };
+
+                    query.$or.push(qObj);
+
+                    selectObj[i] = 1;
+                }
+
+
+                db.find(query, selectObj)
+              //.sort({ esearch: 1 })
+               .limit(limit).toArray(function (err, docs) {
+                   callback(docs);
+               });
 
             },
 
@@ -182,11 +153,13 @@
 
                 db.find(findObj)
                     //.limit(limit)
-                    .exec(function (err, docs) {
+                    .toArray(function (err, docs) {
                         callback(docs);
                     });
 
             },
+
+
 
             insert: function (tableName, insertObj, callback) {
                 var db = this._getDB(tableName);

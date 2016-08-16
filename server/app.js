@@ -65,7 +65,6 @@
     }
 
 
-
     NwServiceProcess.addServiceMethod(NwStockServiceMethod);
 
     var passiveConn = function (appServer, port, ip) {
@@ -137,7 +136,10 @@
 
     //app.use(express.static(__dirname + '/../web'))
 
-    listenCommand(process.env.PORT || 8088);
+    setTimeout(function () {
+        listenCommand(process.env.PORT || 8088);
+    }, 1000)
+  
 
 })(this);
 

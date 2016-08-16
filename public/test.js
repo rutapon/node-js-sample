@@ -25,9 +25,7 @@
         var id = wsClient.getId();
         console.log('onConnect ' + id);
 
-        stockMethod.count(function (num) {
-            console.log('num', num);
-        });
+
 
     });
 
@@ -35,5 +33,25 @@
 
     });
 
+    $(function () {
+        $('#count').click(function () {
+            stockMethod.count(function (num) {
+                console.log('num', num);
+            });
+        });
+        $('#searchStartWith_limit').click(function () {
+
+            stockMethod.searchStartWith_limit('cat', 15, function (num) {
+                console.log('num', num);
+            });
+        });
+
+        $('#findWord').click(function () {
+
+            stockMethod.findWord('cat', function (num) {
+                console.log('num', num);
+            });
+        });
+    });
 
 })();

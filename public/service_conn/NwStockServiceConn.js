@@ -43,28 +43,28 @@
                 this.wsClient.callService('count', {}, cb);
             },
 
-            searchStartWith: function (stockName, cb) {
-                this.wsClient.callService('searchStartWith', { stockName: stockName }, cb);
+            searchStartWith: function (esearch, cb) {
+                this.wsClient.callService('searchStartWith', { esearch: esearch }, cb);
             },
 
-            searchStartWith_limit: function (stockName, findWord, limit, cb) {
-                this.wsClient.callService('searchStartWith_limit', { stockName: stockName, findWord: findWord, limit: limit }, cb);
+            searchStartWith_limit: function (esearch, limit, cb) {
+                this.wsClient.callService('searchStartWith_limit', { esearch: esearch, limit: limit }, cb);
             },
-            searchContain: function (stockName, insertObj, cb) {
-                insertObj.stockName = stockName;
-                this.wsClient.callService('searchContain', insertObj, cb);
+            searchContain: function (insertObj, cb) {
+
+                this.wsClient.callService(insertObj, cb);
             },
-            searchContain_limit: function (stockName, updateObj, cb) {
-                updateObj.stockName = stockName;
+            searchContain_limit: function (updateObj, cb) {
+
                 this.wsClient.callService('searchContain_limit', updateObj, cb);
             },
-            searchWhere: function (stockName, code, cb) {
-                this.wsClient.callService('searchWhere', { stockName: stockName, code: code }, cb);
+            searchWhere: function (cb) {
+                this.wsClient.callService('searchWhere', {}, cb);
             },
-            findWord: function (dataObj, cb) {
-                this.wsClient.callService('findWord', dataObj, cb);
+            findWord: function (esearch, cb) {
+                this.wsClient.callService('findWord', { esearch: esearch }, cb);
             }
-          
+
         };
     });
 
