@@ -101,11 +101,15 @@
             var esearch = data.esearch;
             this.dbConn.searchStartWith(this.colName, { esearch: esearch }, limit, function (docs) {
                 var docs = _.pluck(docs, 'esearch');
+                docs = _.sortBy(docs, function (esearch) {
+                 
+                    return esearch.toLowerCase();
+                });
                 if (cb) cb(docs);
             });
         },
         searchContain: function (data, cb) {
-          
+
         },
         searchContain_limit: function (data, cb) {
 
